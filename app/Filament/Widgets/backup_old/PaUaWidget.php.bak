@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Filament\Widgets;
+
+use App\Services\PaUaService;
+use Filament\Widgets\StatsOverviewWidget as BaseWidget;
+use Filament\Widgets\StatsOverviewWidget\Stat;
+
+class PaUaWidget extends BaseWidget
+{
+    protected ?string $pollingInterval = '5s';
+
+    protected function getStats(): array
+    {
+        $data = PaUaService::calculate();
+
+        return [
+            Stat::make('Total Unit', $data['total'])
+                ->description('Jumlah unit aktif'),
+
+            Stat::make('ON', $data['on'])
+                ->description('Unit sedang operasi')
+                ->color('success'),
+
+            Stat::make('BD', $data['bd'])
+                ->description('Unit breakdown')
+                ->color('danger'),
+
+            Stat::make('STB Ready', $data['stb_ready'])
+                ->description('Unit standby siap')
+                ->color('warning'),
+
+            Stat::make('PA %', $data['pa'] . '%')
+                ->description('Physical Availability')
+                ->color('info'),
+
+            Stat::make('UA %', $data['ua'] . '%')
+                ->description('Utilization Availability')
+                ->color('success'),
+        ];
+    }
+}
