@@ -30,6 +30,12 @@ class UpdateUnitStatusResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'unit_code';
 
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->canUpdateUnitStatus() ?? false;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return UpdateUnitStatusForm::configure($schema);

@@ -27,6 +27,12 @@ class EquipmentCategoryResource extends Resource
     protected static string|\UnitEnum|null $navigationGroup='Master Data';
 
 
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->canManageMasterData() ?? false;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return EquipmentCategoryForm::configure($schema);

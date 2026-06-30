@@ -27,6 +27,12 @@ class UnitStatusLogResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->canViewDashboard() ?? false;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema;

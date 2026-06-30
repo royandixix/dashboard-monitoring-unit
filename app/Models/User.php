@@ -18,6 +18,7 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
+        'role',
     ];
 
     protected $hidden = [
@@ -33,11 +34,53 @@ class User extends Authenticatable implements FilamentUser
         ];
     }
 
-    // 
-
     public function canAccessPanel(Panel $panel): bool
     {
-        return true;
+        return in_array($this->role, [
+            'super_admin',
+            'admin',
+            'viewer',
+        ], true);
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'super_admin';
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isViewer(): bool
+    {
+        return $this->role === 'viewer';
+    }
+
+    public function canManageMasterData(): bool
+    {
+        return in_array($this->role, [
+            'super_admin',
+            'admin',
+        ], true);
+    }
+
+    public function canUpdateUnitStatus(): bool
+    {
+        return in_array($this->role, [
+            'super_admin',
+            'admin',
+        ], true);
+    }
+
+    public function canViewDashboard(): bool
+    {
+        return in_array($this->role, [
+            'super_admin',
+            'admin',
+            'viewer',
+        ], true);
     }
 
     public function updatedUnits()

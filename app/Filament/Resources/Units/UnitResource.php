@@ -32,6 +32,12 @@ class UnitResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'unit_code';
 
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->canManageMasterData() ?? false;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return UnitForm::configure($schema);
