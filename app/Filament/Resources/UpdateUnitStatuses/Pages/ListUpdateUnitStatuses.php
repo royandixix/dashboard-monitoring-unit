@@ -9,7 +9,7 @@ class ListUpdateUnitStatuses extends ListRecords
 {
     protected static string $resource = UpdateUnitStatusResource::class;
 
-    protected static ?string $title = 'Update Status Unit';
+    protected static ?string $title = 'Update Unit A2B';
 
     protected function getHeaderActions(): array
     {

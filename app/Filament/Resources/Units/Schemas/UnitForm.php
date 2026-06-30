@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Units\Schemas;
 
+use App\Models\Location;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -27,9 +28,18 @@ class UnitForm
                 ->preload()
                 ->required(),
 
+            Select::make('unit_group')
+                ->label('Kelompok Unit')
+                ->options([
+                    'A2B' => 'A2B',
+                    'HAULER' => 'Hauler / Dump Truck',
+                ])
+                ->default('A2B')
+                ->required(),
+
             TextInput::make('unit_code')
                 ->label('Nomor Lambung')
-                ->placeholder('Contoh: EXCA-200-001')
+                ->placeholder('Contoh: EXCA-200-001 / DT-001')
                 ->required()
                 ->maxLength(100)
                 ->unique(ignoreRecord: true),
@@ -54,9 +64,16 @@ class UnitForm
                 ->preload()
                 ->nullable(),
 
-            TextInput::make('current_position')
+            Select::make('current_position')
                 ->label('Posisi Saat Ini')
-                ->placeholder('Contoh: Pit A / Workshop / Karbo 2')
+                ->options(
+                    Location::query()
+                        ->orderBy('name')
+                        ->pluck('name', 'name')
+                        ->toArray()
+                )
+                ->searchable()
+                ->preload()
                 ->nullable(),
 
             DateTimePicker::make('current_start_bd')

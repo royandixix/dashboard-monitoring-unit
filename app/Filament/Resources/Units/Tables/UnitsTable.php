@@ -20,6 +20,16 @@ class UnitsTable
                     ->searchable()
                     ->sortable(),
 
+                TextColumn::make('unit_group')
+                    ->label('Kelompok')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'A2B' => 'info',
+                        'HAULER' => 'warning',
+                        default => 'gray',
+                    })
+                    ->sortable(),
+
                 TextColumn::make('equipmentCategory.name')
                     ->label('Jenis Unit')
                     ->searchable()
@@ -45,39 +55,34 @@ class UnitsTable
 
                 TextColumn::make('activity.name')
                     ->label('Aktivitas')
+                    ->placeholder('Belum diisi')
                     ->searchable(),
 
                 TextColumn::make('current_position')
                     ->label('Posisi')
+                    ->placeholder('Belum diisi')
                     ->searchable(),
 
                 TextColumn::make('current_start_bd')
                     ->label('Start BD')
                     ->dateTime('d M Y H:i')
+                    ->placeholder('-')
                     ->sortable(),
 
                 TextColumn::make('updatedBy.name')
                     ->label('PIC')
+                    ->placeholder('Belum ada PIC')
                     ->searchable(),
 
                 TextColumn::make('last_updated_at')
                     ->label('Update Terakhir')
                     ->dateTime('d M Y H:i')
+                    ->placeholder('Belum pernah update')
                     ->sortable(),
 
                 IconColumn::make('is_active')
                     ->label('Aktif')
                     ->boolean(),
-
-                TextColumn::make('created_at')
-                    ->label('Dibuat')
-                    ->dateTime('d M Y H:i')
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('updated_at')
-                    ->label('Diubah')
-                    ->dateTime('d M Y H:i')
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->defaultSort('updated_at', 'desc')
             ->recordActions([

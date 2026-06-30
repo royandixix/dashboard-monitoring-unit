@@ -38,6 +38,10 @@ class User extends Authenticatable implements FilamentUser
     {
         return in_array($this->role, [
             'super_admin',
+            'operation',
+            'manager_viewer',
+
+            // role lama tetap diizinkan supaya tidak langsung error
             'admin',
             'viewer',
         ], true);
@@ -48,39 +52,42 @@ class User extends Authenticatable implements FilamentUser
         return $this->role === 'super_admin';
     }
 
-    public function isAdmin(): bool
+    public function isOperation(): bool
     {
-        return $this->role === 'admin';
+        return in_array($this->role, [
+            'operation',
+            'admin',
+        ], true);
     }
 
-    public function isViewer(): bool
+    public function isManagerViewer(): bool
     {
-        return $this->role === 'viewer';
+        return in_array($this->role, [
+            'manager_viewer',
+            'viewer',
+        ], true);
     }
 
     public function canManageMasterData(): bool
     {
-        return in_array($this->role, [
-            'super_admin',
-            'admin',
-        ], true);
+        return $this->isSuperAdmin();
     }
 
     public function canUpdateUnitStatus(): bool
     {
-        return in_array($this->role, [
-            'super_admin',
-            'admin',
-        ], true);
+        return $this->isSuperAdmin() || $this->isOperation();
+    }
+
+    public function canInputHauler(): bool
+    {
+        return $this->isSuperAdmin();
     }
 
     public function canViewDashboard(): bool
     {
-        return in_array($this->role, [
-            'super_admin',
-            'admin',
-            'viewer',
-        ], true);
+        return $this->isSuperAdmin()
+            || $this->isOperation()
+            || $this->isManagerViewer();
     }
 
     public function updatedUnits()

@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\UpdateUnitStatuses\Schemas;
 
+use App\Models\Location;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class UpdateUnitStatusForm
@@ -31,15 +31,22 @@ class UpdateUnitStatusForm
                 ->preload()
                 ->nullable(),
 
-            TextInput::make('current_position')
+            Select::make('current_position')
                 ->label('Posisi')
-                ->placeholder('Contoh: Pit A / Workshop / Karbo 2')
+                ->options(
+                    Location::query()
+                        ->orderBy('name')
+                        ->pluck('name', 'name')
+                        ->toArray()
+                )
+                ->searchable()
+                ->preload()
                 ->nullable(),
 
             DateTimePicker::make('current_start_bd')
                 ->label('Start BD')
-                ->visible(fn ($get) => $get('current_status') === 'BD')
-                ->required(fn ($get) => $get('current_status') === 'BD'),
+                ->visible(fn ($get): bool => $get('current_status') === 'BD')
+                ->required(fn ($get): bool => $get('current_status') === 'BD'),
         ]);
     }
 }

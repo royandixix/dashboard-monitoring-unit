@@ -11,6 +11,8 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use UnitEnum;
 
 class UpdateUnitStatusResource extends Resource
 {
@@ -18,22 +20,27 @@ class UpdateUnitStatusResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowsUpDown;
 
-    protected static ?string $navigationLabel = 'Update Status Unit';
+    protected static ?string $navigationLabel = 'Update Unit A2B';
 
-    protected static ?string $modelLabel = 'Update Status Unit';
+    protected static ?string $modelLabel = 'Update Unit A2B';
 
-    protected static ?string $pluralModelLabel = 'Update Status Unit';
+    protected static ?string $pluralModelLabel = 'Update Unit A2B';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Monitoring';
+    protected static string|UnitEnum|null $navigationGroup = 'Monitoring';
 
     protected static ?int $navigationSort = 1;
 
     protected static ?string $recordTitleAttribute = 'unit_code';
 
-
     public static function canAccess(): bool
     {
         return auth()->user()?->canUpdateUnitStatus() ?? false;
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('unit_group', 'A2B');
     }
 
     public static function form(Schema $schema): Schema

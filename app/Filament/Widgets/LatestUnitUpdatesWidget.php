@@ -35,6 +35,16 @@ class LatestUnitUpdatesWidget extends BaseWidget
                     ->sortable()
                     ->weight('bold'),
 
+                TextColumn::make('unit_group')
+                    ->label('Kelompok')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'A2B' => 'info',
+                        'HAULER' => 'warning',
+                        default => 'gray',
+                    })
+                    ->sortable(),
+
                 TextColumn::make('project.name')
                     ->label('Project')
                     ->searchable()

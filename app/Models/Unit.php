@@ -9,6 +9,7 @@ class Unit extends Model
     protected $fillable = [
         'project_id',
         'equipment_category_id',
+        'unit_group',
         'unit_code',
         'current_status',
         'current_activity_id',

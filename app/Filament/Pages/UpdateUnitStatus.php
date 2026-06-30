@@ -25,22 +25,21 @@ class UpdateUnitStatus extends Page implements HasForms
 
     protected static string|UnitEnum|null $navigationGroup = 'Monitoring';
 
-    protected static ?string $navigationLabel = 'Input Manual Unit';
+    protected static ?string $navigationLabel = 'Input Manual Unit Hauler';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPencilSquare;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTruck;
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
 
-    protected static ?string $slug = 'input-manual-unit';
+    protected static ?string $slug = 'input-manual-unit-hauler';
 
     protected string $view = 'filament.pages.update-unit-status';
 
     public ?array $data = [];
 
-
     public static function canAccess(): bool
     {
-        return auth()->user()?->canUpdateUnitStatus() ?? false;
+        return auth()->user()?->canInputHauler() ?? false;
     }
 
     public function mount(): void
@@ -56,10 +55,11 @@ class UpdateUnitStatus extends Page implements HasForms
             ->statePath('data')
             ->components([
                 Select::make('unit_id')
-                    ->label('Pilih Unit / Nomor Lambung')
+                    ->label('Pilih Unit Hauler / DT')
                     ->options(
                         Unit::query()
                             ->where('is_active', true)
+                            ->where('unit_group', 'HAULER')
                             ->orderBy('unit_code')
                             ->pluck('unit_code', 'id')
                             ->toArray()
@@ -124,7 +124,7 @@ class UpdateUnitStatus extends Page implements HasForms
 
                 Textarea::make('note')
                     ->label('Catatan')
-                    ->placeholder('Contoh: input manual karena pengawas belum melakukan laporan')
+                    ->placeholder('Contoh: input manual unit hauler / DT oleh Super Admin')
                     ->rows(3)
                     ->columnSpanFull()
                     ->nullable(),
@@ -135,7 +135,9 @@ class UpdateUnitStatus extends Page implements HasForms
     {
         $data = $this->form->getState();
 
-        $unit = Unit::findOrFail($data['unit_id']);
+        $unit = Unit::query()
+            ->where('unit_group', 'HAULER')
+            ->findOrFail($data['unit_id']);
 
         $startBd = ($data['status'] === 'BD')
             ? ($data['start_bd'] ?? now())
@@ -162,7 +164,7 @@ class UpdateUnitStatus extends Page implements HasForms
         ]);
 
         Notification::make()
-            ->title('Status unit berhasil diperbarui')
+            ->title('Status unit hauler berhasil diperbarui')
             ->body('PIC otomatis tercatat sebagai ' . Auth::user()?->name)
             ->success()
             ->send();
